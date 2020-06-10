@@ -1,11 +1,18 @@
 from flask import Flask
 from .blueprints.oximeter import oximeter_blueprint
+from os import path
 
-def create_app(config_env_var="FLASK_CONFIG"):
-    app = Flask("backend")
-    if config_env_var:
-        app.config.from_envvar(config_env_var, silent=False)
 
+def create_app(mode="production"):
+    instance_path = path.join(
+        path.abspath(path.dirname(__file__)), "%s_instance" % mode
+    )
+
+    print(instance_path)
+    app = Flask("backend",
+                instance_path=instance_path,
+                instance_relative_config=True)
+    app.config.from_pyfile('config.cfg')
     app.register_blueprint(oximeter_blueprint)
 
     return app

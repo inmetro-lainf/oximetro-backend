@@ -1,4 +1,6 @@
+import sys
 from backend.oxi_app import create_app
 
-app = create_app(config_env_var='FLASK_CONFIG')
-app.run(debug=True, use_reloader=True)
+_mode = sys.argv[1] if len(sys.argv) > 1 else 'development'
+app = create_app(mode=_mode)
+app.run()
