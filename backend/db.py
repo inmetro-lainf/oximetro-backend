@@ -4,8 +4,8 @@ class DBInflux():
     def __init__(self, host="0.0.0.0", port=8086):
         try:
             self._influxdb = InfluxDBClient(host=host, port=port)
-        except Exception:
-            raise Exception
+        except ConnectionRefusedError:
+            raise ConnectionRefusedError
 
     def verifica_conexao(self):
         return self._influxdb.ping()
