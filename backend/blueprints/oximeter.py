@@ -1,4 +1,4 @@
-from flask import (Blueprint, render_template, current_app)
+from flask import (Blueprint, render_template, current_app, request)
 from backend.db import DBInflux
 import os
 
@@ -12,13 +12,25 @@ def index():
     return render_template("index.html")
 
 @oximeter_blueprint.route("/dados_oximetro", methods=["GET"])
-def le_dados_do_banco():
+def leitura_simples():
     lista_tags = ["hearthate", "sp02"]
+    dados = le_dados_do_banco(lista_tags)
+    dados_dict = {dados.index(item): item for item in dados}
+    return dados_dict
+
+@oximeter_blueprint.route("/busca_dados_para_grafico/<tag>", methods=["GET"])
+def leitura_para_grafico(tag):
+    dados = le_dados_do_banco([tag])
+    print(dados)
+    dados_list = [[item['time'], item[tag]] for item in dados]
+    graph_data = {'graph_data': dados_list}
+    return graph_data
+
+def le_dados_do_banco(lista_tags):
     banco = init_db()
     dados = banco.busca_dados(lista_tags)
-    dados_dict = {dados.index(item): item for item in dados}
     fecha_conexao_db(banco)
-    return dados_dict
+    return dados
 
 # TODO: Verificar melhor maneira de inicializar o banco
 # o banco precisa ser inicializado dentro do contexto da aplicaçao.
