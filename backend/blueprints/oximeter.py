@@ -8,7 +8,7 @@ oximeter_blueprint = Blueprint('oximeter-blueprint', __name__)
 
 @oximeter_blueprint.route('/')
 def index():
-    return send_from_directory("static", "index.html")
+    return send_from_directory("backend/static/", "index.html")
 
 @oximeter_blueprint.route("/<path:path>")
 @cross_origin()
@@ -16,7 +16,7 @@ def static_files(path):
     # TODO: Arquivos estaticos devem ser providos por outro web server...
     #  Please keep in mind that how you are actually "serving" the files will probably differ between production (on your web server) and development (on your local computer, or some other test area). As some answers have pointed out, you will probably NOT want to serve your static files with flask, but instead have them in their own directory and then have your actual web server (Apache, nginx, etc.) server those files directly.
 
-    return send_from_directory("static", path)
+    return send_from_directory("backend/static/", path)
 
 @oximeter_blueprint.route("/dados_oximetro", methods=["GET"])
 @cross_origin()
