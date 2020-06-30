@@ -1,17 +1,19 @@
-from flask import (Blueprint, render_template, current_app, request)
+from flask import (Blueprint, render_template, current_app)
+from flask_cors import cross_origin
 from backend.db import DBInflux
-import os
-
+from datetime import datetime
 
 oximeter_blueprint = Blueprint('oximeter-blueprint', __name__)
 
 
 
 @oximeter_blueprint.route("/")
+@cross_origin()
 def index():
     return render_template("index.html")
 
 @oximeter_blueprint.route("/dados_oximetro", methods=["GET"])
+@cross_origin()
 def leitura_simples():
     lista_tags = ["hearthate", "sp02"]
     dados = le_dados_do_banco(lista_tags)
@@ -19,12 +21,18 @@ def leitura_simples():
     return dados_dict
 
 @oximeter_blueprint.route("/busca_dados_para_grafico/<tag>", methods=["GET"])
+@cross_origin()
 def leitura_para_grafico(tag):
     dados = le_dados_do_banco([tag])
-    print(dados)
-    dados_list = [[item['time'], item[tag]] for item in dados]
+    dados_list = [[formata_data(item['time']), float(item[tag])] for item in dados]
     graph_data = {'graph_data': dados_list}
     return graph_data
+
+def formata_data(data_no_formato_iso):
+    data_novo_formato = datetime \
+        .fromisoformat(data_no_formato_iso[:len(data_no_formato_iso) - 1]) \
+        .strftime("%d/%m/%Y %H:%M:%S")
+    return data_novo_formato
 
 def le_dados_do_banco(lista_tags):
     banco = init_db()

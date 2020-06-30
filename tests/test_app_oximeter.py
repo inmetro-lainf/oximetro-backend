@@ -33,7 +33,7 @@ class AppTest(unittest.TestCase):
             self.assertEqual(request.path, '/busca_dados_para_grafico/hearthate')
 
         # Faz assert da resposta para requisiçao GET
-        dados_teste = ['2020-05-20T13:08:20.665284Z', '74']
+        dados_teste = ['20/05/2020 13:08:20', '74']
         with self.app.test_client() as cliente:
             resposta = cliente.get('/busca_dados_para_grafico/hearthate')
             dados = json.loads(resposta.data)
