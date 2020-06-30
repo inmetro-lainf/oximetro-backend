@@ -10,6 +10,8 @@ def create_app(mode="production"):
 
     print(instance_path)
     app = Flask("oximeter-backend",
+                static_folder="/static/",
+                template_folder="template",
                 instance_path=instance_path,
                 instance_relative_config=True)
     app.config.from_pyfile('config.cfg')
